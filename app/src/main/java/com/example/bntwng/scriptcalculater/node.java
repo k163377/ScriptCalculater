@@ -197,12 +197,19 @@ public class node {
                             throw new IllegalArgumentException("カッコの数が合いません");
 
                             //定数系
-                        case 'e':
+                        case 'e'://ネイピア数
                             if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
                             nodeArray.add(new node(Math.E));
                             left++;
                             isNode = true;
                             break;
+                        case 'g'://重力定数
+                            if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
+                            nodeArray.add(new node(6.6708/100000000000.0));
+                            left++;
+                            isNode = true;
+                            break;
+
                         case 'p':
                             if(Formula.charAt(left+1)=='i'){//piは2文字喰うので検査、それ以外はゴミ
                                 if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
