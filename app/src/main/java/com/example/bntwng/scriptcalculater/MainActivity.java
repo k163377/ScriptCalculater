@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
+
 public class MainActivity extends AppCompatActivity {
     Button doButton;
     EditText inputFormula;
@@ -21,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
     protected void calculate(){
         try{
             node n = new node(inputFormula.getText().toString());
-            resultView.setText(String.valueOf(n.getValue()));
+            resultView.setText(BigDecimal.valueOf(n.getValue()).toPlainString());
         }catch(Exception e){
-            resultView.setText("error!");
+            resultView.setText(e.getMessage());
         }
         //String text = inputFormula.getText().toString();
         //resultView.setText(text);
