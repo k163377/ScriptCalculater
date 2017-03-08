@@ -197,6 +197,13 @@ public class node {
                             throw new IllegalArgumentException("カッコの数が合いません");
 
                             //定数系
+                        case 'c'://光速
+                            if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
+                            nodeArray.add(new node(299792458));
+                            left++;
+                            isNode = true;
+                            break;
+
                         case 'e'://ネイピア数
                             if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
                             nodeArray.add(new node(Math.E));
@@ -209,8 +216,7 @@ public class node {
                             left++;
                             isNode = true;
                             break;
-
-                        case 'p':
+                        case 'p'://円周率
                             if(Formula.charAt(left+1)=='i'){//piは2文字喰うので検査、それ以外はゴミ
                                 if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
                                 nodeArray.add(new node(Math.PI));
