@@ -219,6 +219,25 @@ public class node {
                 }else{
                     switch(t){
                         case OPERATOR://演算子
+                            //単項演算子
+                            if (c == '!') {
+                                if(nodeArray.isEmpty())throw new IllegalArgumentException(c + "が先頭にあります");
+                                else if(isNode == false)throw new IllegalArgumentException("演算子が連続しています");
+
+                                long x,y;
+                                x = 1;
+                                y = (long)nodeArray.get(nodeArray.size()-1).getValue();
+                                if((double)y != nodeArray.get(nodeArray.size()-1).getValue()||y < 0)throw new IllegalArgumentException(c + "が非整数に適用されました");
+                                while(y > 1){
+                                    x *= y;
+                                    y--;
+                                }
+                                node n = new node((double)x);
+                                nodeArray.set(nodeArray.size()-1,n);
+                                left++;
+                                break;
+                            }
+                            //二項演算子
                             if(c == '-'){//マイナスが初めに来たら0から引く動作を追加
                                 if(nodeArray.isEmpty())nodeArray.add(new node(0));
                                 else if(isNode == false)throw new IllegalArgumentException("演算子が連続しています");
