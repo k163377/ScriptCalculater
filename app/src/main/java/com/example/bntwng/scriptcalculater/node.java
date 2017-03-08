@@ -203,7 +203,6 @@ public class node {
                             left++;
                             isNode = true;
                             break;
-
                         case 'e'://ネイピア数
                             if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
                             nodeArray.add(new node(Math.E));
@@ -213,6 +212,12 @@ public class node {
                         case 'g'://重力定数
                             if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
                             nodeArray.add(new node(6.6708/100000000000.0));
+                            left++;
+                            isNode = true;
+                            break;
+                        case 'h':
+                            if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
+                            nodeArray.add(new node(6.626070040*Math.pow(10,-34)));
                             left++;
                             isNode = true;
                             break;
