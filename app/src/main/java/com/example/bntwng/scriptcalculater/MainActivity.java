@@ -16,29 +16,34 @@ import java.math.BigDecimal;
 public class MainActivity extends AppCompatActivity {
     Button doButton;
     EditText inputFormula;
-    TextView resultView;
+    EditText memoEditor;
+    //TextView resultView;
 
     InputMethodManager inputMethodManager;
 
     protected void calculate(){
         try{
             node n = new node(inputFormula.getText().toString());
-            resultView.setText(BigDecimal.valueOf(n.getValue()).toPlainString());
+
+            StringBuilder sb = new StringBuilder(n.getFormula());
+            sb.append(" =");
+            sb.append(System.getProperty("line.separator"));
+            sb.append(BigDecimal.valueOf(n.getValue()).toPlainString());
+            sb.append(System.getProperty("line.separator"));
+
+            memoEditor.append(sb.toString());
         }catch(Exception e){
-            resultView.setText(e.getMessage());
+            memoEditor.append(e.getMessage());
         }
-        //String text = inputFormula.getText().toString();
-        //resultView.setText(text);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        resultView = (TextView)findViewById(R.id.resultView);
-
         inputMethodManager =  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        memoEditor = (EditText) findViewById(R.id.memoEditor);
 
         inputFormula = (EditText) findViewById(R.id.inputFormula);
         inputFormula.setOnKeyListener(new View.OnKeyListener() {
