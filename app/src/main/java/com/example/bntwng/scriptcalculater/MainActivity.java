@@ -5,11 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+//import android.widget.TextView;
 
 import java.math.BigDecimal;
 
@@ -25,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
         try{
             node n = new node(inputFormula.getText().toString());
 
-            StringBuilder sb = new StringBuilder(n.getFormula());
+            StringBuilder sb = new StringBuilder(System.getProperty("line.separator"));
+            sb.append(n.getFormula());
             sb.append(" =");
             sb.append(System.getProperty("line.separator"));
             sb.append(BigDecimal.valueOf(n.getValue()).toPlainString());
@@ -33,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
             memoEditor.append(sb.toString());
         }catch(Exception e){
-            memoEditor.append(e.getMessage());
+            StringBuilder sb = new StringBuilder(System.getProperty("line.separator"));
+            sb.append(e.getMessage());
+            sb.append(System.getProperty("line.separator"));
+            memoEditor.append(sb.toString());
         }
     }
 
@@ -68,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 calculate();
-               // エディットテキストのテキストを取得
-                //String text = inputFormula.getText().toString();
-                // 取得したテキストを TextView に張り付ける
-
-                //doButton.setText(text);
-                //resultView.setText(text);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 }
 
