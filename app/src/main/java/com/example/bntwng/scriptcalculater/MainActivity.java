@@ -1,103 +1,98 @@
 package com.example.bntwng.scriptcalculater;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-//import android.widget.TextView;
+import android.widget.TextView;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 
 public class MainActivity extends AppCompatActivity {
+    static String ln = System.getProperty("line.separator");
+
     Button doButton;
     EditText inputFormula;
     EditText memoEditor;
-    //TextView resultView;
+    TextView messageView;
 
     InputMethodManager inputMethodManager;
 
+    protected void backUp(){
+        try {
+            File file = new File(getFilesDir().getPath() + "/temp");
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
+            pw.println(memoEditor.getText());
+            pw.close();
+        }catch (IOException e){
+            messageView.setText("バックアップに失敗しました、念のためデータの外部への保存を推奨します");
+        }
+    }
 
     protected void calculate(){
         try{
             String s = inputFormula.getText().toString();
-            if(s.equals(""))return;//何も入っていなければリターン
+            if(s.equals(""))return;//何も入っていなければ何もせずリターン
 
             node n = new node(s);
 
-            StringBuilder sb = new StringBuilder(System.getProperty("line.separator"));
+            StringBuilder sb = new StringBuilder(ln);
             sb.append(n.getFormula());
             sb.append(" =");
-            sb.append(System.getProperty("line.separator"));
+            sb.append(ln);
             sb.append(BigDecimal.valueOf(n.getValue()).toPlainString());
-            sb.append(System.getProperty("line.separator"));
+            sb.append(ln);
 
             memoEditor.append(sb.toString());
+            messageView.setText("calculated");
+
+            backUp();
         }catch(Exception e){
-            StringBuilder sb = new StringBuilder(System.getProperty("line.separator"));
-            sb.append(e.getMessage());
-            sb.append(System.getProperty("line.separator"));
-            memoEditor.append(sb.toString());
+            messageView.setText(e.getMessage());
         }
     }
 
-    protected void saveMemo(){//メモを保存、現在試験用の状態
-        final EditText editView = new EditText(MainActivity.this);
-        new AlertDialog.Builder(MainActivity.this)
-                //.setIcon(android.R.drawable.ic_dialog_info)
-                .setTitle("ファイル名を入力")
-                //setViewにてビューを設定します。
-                .setView(editView)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        //入力した文字をトースト出力する
-                        Toast.makeText(MainActivity.this,
-                                editView.getText().toString(),
-                                Toast.LENGTH_LONG).show();
-                    }
-                })
-                .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                })
-                .show();
-    /*
-        BufferedWriter bw = null;
-        try{
-            bw = new BufferedWriter(new OutputStreamWriter(openFileOutput("")))
-        }catch (Exception e){
-            StringBuilder sb = new StringBuilder(System.getProperty("line.separator"));
-            sb.append(e.getMessage());
-            sb.append(System.getProperty("line.separator"));
-            memoEditor.append(sb.toString());
-        }finally {
-            try{
-                if(bw != null)bw.close();
-            }catch (Exception e){
-                e.printStackTrace();//とりあえずエラーが出たら書いておく
-            }
-        }*/
-    }
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {//アプリ開始時に呼ばれる
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         inputMethodManager =  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 
+        messageView = (TextView)  findViewById(R.id.messageView);
+
         memoEditor = (EditText) findViewById(R.id.memoEditor);
+        try{//バックアップからの復元
+            File file = new File(getFilesDir().getPath() + "/temp");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            StringBuilder sb = new StringBuilder(br.readLine());//null突っ込んでもsbがExceotion吐くのでちゃんと終わる
+            String str = br.readLine();
+
+            while(str!=null){
+                sb.append(str);
+                sb.append(ln);
+                str = br.readLine();
+            }
+
+            memoEditor.setText(sb.toString());
+
+            br.close();
+        }catch (Exception e){//ファイルが無いとか読み込みミスったら何もしない
+            messageView.setText("onCreate:" + e.getMessage());
+        }
 
         inputFormula = (EditText) findViewById(R.id.inputFormula);
         inputFormula.setOnKeyListener(new View.OnKeyListener() {
@@ -127,16 +122,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.option_menu, menu);
-        return true;
+    protected void onDestroy(){
+        backUp();
+        super.onDestroy();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    /*@Override//メニュー関連
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            if (requestCode == CHOSE_FILE_CODE && resultCode == RESULT_OK) {
+                String filePath = data.getDataString().replace("file://", "");
+                String decodedfilePath = URLDecoder.decode(filePath, "utf-8");
+                //imageText.setText(decodedfilePath);
+            }
+        } catch (UnsupportedEncodingException e) {
+            // いい感じに例外処理
+        }
+    }*/
+    /*@Override//メニュー関連
+    public boolean onCreateOptionsMenu(Menu menu) {//メニューの表示
+        getMenuInflater().inflate(R.menu.option_menu, menu);
+        return true;
+    }*/
+
+    /*@Override
+    public boolean onOptionsItemSelected(MenuItem item){//メニューが選ばれた時の対応
         switch(item.getItemId()){
             case R.id.option_menu_item0://保存
-                saveMemo();
+                //saveMemo();
                 break;
             case R.id.option_menu_item1://読み込み
                 break;
@@ -144,6 +157,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return true;
-    }
+    }*/
 }
 
