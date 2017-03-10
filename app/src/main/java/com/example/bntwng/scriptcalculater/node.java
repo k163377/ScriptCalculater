@@ -21,9 +21,7 @@ public class node {
 
         this.right = Math.min(this.left+1,Formula.length()-1);//今読んでいる場所の一個右からスタート
         while(0<depth){
-            if(Formula.length()-1<right) {
-                throw new IllegalArgumentException("カッコの数が合いません");
-            }
+            if(Formula.length()-1<right) throw new IllegalArgumentException("カッコの数が合いません");
 
             char c = Formula.charAt(right);
             if(c=='(')depth++;
@@ -68,7 +66,6 @@ public class node {
         }
 
         nodeArray.add(new node(Double.parseDouble(s)));
-        //return new node(Double.parseDouble(s));
     }
 
     protected void calculatingPower(){//累乗
