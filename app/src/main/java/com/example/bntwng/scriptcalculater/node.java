@@ -27,8 +27,7 @@ public class node {
 
             this.right++;
 
-            if(Formula.length()<right){//後で例外を投げるように改変
-                System.out.println("カッコの数が合いません");
+            if(Formula.length()<right){
                 throw new IllegalArgumentException("カッコの数が合いません");
             }
         }
@@ -54,7 +53,6 @@ public class node {
             //小数点が入った時
             if(c == '.'){
                 if(isDecimal == true){
-                    System.out.println("1変数に小数点が複数含まれています");
                     throw new IllegalArgumentException("1つの数に小数点が複数含まれています");
                 }
                 else{
@@ -203,10 +201,15 @@ public class node {
                             left++;
                             isNode = true;
                             break;
-                        case 'e'://ネイピア数
+                        case 'e'://ネイピア数もしくは電気素量
                             if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
-                            nodeArray.add(new node(Math.E));
-                            left++;
+                            if(Formula.charAt(Math.min(left+1,Formula.length()-1))=='l'){//電気素量
+                                nodeArray.add(new node(1.6021766208*Math.pow(10,-19)));
+                                left+=2;
+                            }else {//ネイピア数
+                                nodeArray.add(new node(Math.E));
+                                left++;
+                            }
                             isNode = true;
                             break;
                         case 'g'://重力定数
@@ -215,14 +218,14 @@ public class node {
                             left++;
                             isNode = true;
                             break;
-                        case 'h':
+                        case 'h'://プランク定数
                             if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
                             nodeArray.add(new node(6.626070040*Math.pow(10,-34)));
                             left++;
                             isNode = true;
                             break;
                         case 'p'://円周率
-                            if(Formula.charAt(left+1)=='i'){//piは2文字喰うので検査、それ以外はゴミ
+                            if(Formula.charAt(Math.min(left+1,Formula.length()-1))=='i'){//piは2文字喰うので検査、それ以外はゴミ
                                 if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
                                 nodeArray.add(new node(Math.PI));
                                 left+=2;
@@ -301,8 +304,6 @@ public class node {
 
         //最後に加算と減算を処理
         calculatingAddition();
-
-        //System.out.println("end");
     }
     public node(double v){//定数を挿入するときはこっち
         this.value = v;
