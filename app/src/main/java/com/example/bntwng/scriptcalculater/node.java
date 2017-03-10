@@ -19,23 +19,21 @@ public class node {
         //カッコ直後にカッコが来る場合は？
         int depth = 1;
 
-        this.right = this.left+1;//今読んでいる場所の一個右からスタート
+        this.right = Math.min(this.left+1,Formula.length()-1);//今読んでいる場所の一個右からスタート
         while(0<depth){
+            if(Formula.length()-1<right) {
+                throw new IllegalArgumentException("カッコの数が合いません");
+            }
+
             char c = Formula.charAt(right);
             if(c=='(')depth++;
             else if(c==')')depth--;
 
             this.right++;
-
-            if(Formula.length()<right){
-                throw new IllegalArgumentException("カッコの数が合いません");
-            }
         }
 
         nodeArray.add(new node(Formula.substring(left+1,right-1)));
         left = right;
-
-        //return new node(Formula.substring(left+1,right-1));
     }
 
     protected void valueAnalysis()
