@@ -207,6 +207,12 @@ public class node {
                             }
                             isNode = true;
                             break;
+                        case 'f'://ファラデー定数
+                            if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
+                            nodeArray.add(new node(96485.33289));
+                            left++;
+                            isNode = true;
+                            break;
                         case 'g'://重力定数
                             if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
                             nodeArray.add(new node(6.6708/100000000000.0));
@@ -240,6 +246,12 @@ public class node {
                             }else{
                                 throw new IllegalArgumentException(c + "の直後の値が不正です");
                             }
+                            break;
+                        case 'r'://モル気体定数
+                            if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
+                            nodeArray.add(new node(8.3144598));
+                            left++;
+                            isNode = true;
                             break;
                         default:
                             left++;
