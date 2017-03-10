@@ -225,6 +225,12 @@ public class node {
                             left++;
                             isNode = true;
                             break;
+                        case 'l'://アボガドロ定数
+                            if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
+                            nodeArray.add(new node(6.022140857*Math.pow(10,23)));
+                            left++;
+                            isNode = true;
+                            break;
                         case 'p'://円周率
                             if(Formula.charAt(Math.min(left+1,Formula.length()-1))=='i'){//piは2文字喰うので検査、それ以外はゴミ
                                 if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
