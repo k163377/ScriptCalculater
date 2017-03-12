@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     InputMethodManager inputMethodManager;
 
-    protected void backUp(){
+    protected void backUp(){//メモを保存
         try {
             File file = new File(getFilesDir().getPath() + "/temp");
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
@@ -47,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
             String s = inputFormula.getText().toString();
             if(s.equals(""))return;//何も入っていなければ何もせずリターン
 
-            node n = new node(s);
+            Node n = new Node(s);
 
             StringBuilder sb = new StringBuilder(ln);
-            sb.append(n.getFormula());
+            sb.append(s);
             sb.append(" =");
             sb.append(ln);
             sb.append(BigDecimal.valueOf(n.getValue()).toPlainString());
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
             br.close();
         }catch (Exception e){//ファイルが無いとか読み込みミスったら何もしない
-            messageView.setText("onCreate:" + e.getMessage());
+            //messageView.setText("onCreate:" + e.getMessage());//念のための出力、今はコメントアウト
         }
 
         inputFormula = (EditText) findViewById(R.id.inputFormula);
