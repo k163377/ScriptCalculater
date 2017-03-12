@@ -283,7 +283,6 @@ public class Node {
             throw e;
         }
     }
-
     public Node(double d){
         System.out.println(d);
         this.value = d;
