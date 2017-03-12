@@ -1,4 +1,4 @@
-package com.example.bntwng.scriptcalculater;
+package com.example.bntwng.scriptcalculator;
 
 /**
  * Created by bntwng on 2017/03/12.
@@ -141,7 +141,7 @@ public class Node {
         }
     }
 
-    protected double calculate(String formula) throws IllegalArgumentException{//valueに入れるとこまでやる
+    protected final double calculate(String formula) throws IllegalArgumentException{//valueに入れるとこまでやる
         //rightとleftはこちらで極力触らないようにコードを組もう
         right = formula.length()-1;
         ArrayList<Node> nodeArray = new ArrayList<Node>();
@@ -268,7 +268,6 @@ public class Node {
     }
 
     public Node(String formula)throws IllegalArgumentException{
-        System.out.println(formula);
         try{
             value = calculate(formula);
         }catch (Exception e){
@@ -276,7 +275,6 @@ public class Node {
         }
     }
     public Node(double d){
-        System.out.println(d);
         this.value = d;
     }
     public final double getValue() {
