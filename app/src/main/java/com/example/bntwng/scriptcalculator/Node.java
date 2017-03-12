@@ -15,6 +15,7 @@ public class Node {
         //予定ではこのノードが何になるかを判定して、Nodeを作って返す
         int depth = 1;
         char c;
+        Node n = null;
 
         left = right-1;
 
@@ -27,8 +28,20 @@ public class Node {
             left--;
         }
         if(depth!=0)throw new IllegalArgumentException("カッコの数が合いません");
-        //ここで即Nodeを作るのではなく、その後も見た方が良い
-        Node n = new Node(formula.substring(Math.min(left+2,right-1),right));//カッコ閉じの次まで読んでしまうのでleft+2しないと上手く取れない
+
+        int l = left;
+        c = formula.charAt(Math.max(l,0));//ここまで来ていたら多分次には文字が来るはず
+        if(c == 'n'){
+            l--;
+            if(formula.charAt(Math.max(l,0)) == 'i'){
+                l--;
+                if(formula.charAt(Math.max(l,0)) == 's'){
+                    n = new SinNode(formula.substring(Math.min(left+2,right-1),right));
+                    left = l-1;//ちゃんと行くか不明
+                }
+            }
+        }else n = new Node(formula.substring(Math.min(left+2,right-1),right));//カッコ閉じの次まで読んでしまうのでleft+2しないと上手く取れない
+
         right = left;//カッコ閉じの次の文字を指す
         return n;
     }
