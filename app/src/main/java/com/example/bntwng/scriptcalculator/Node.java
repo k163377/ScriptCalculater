@@ -4,6 +4,8 @@ package com.example.bntwng.scriptcalculator;
  * Created by bntwng on 2017/03/12.
  */
 
+import com.example.bntwng.scriptcalculator.functions.*;
+
 import java.util.ArrayList;
 
 public class Node {
@@ -29,18 +31,29 @@ public class Node {
         }
         if(depth!=0)throw new IllegalArgumentException("カッコの数が合いません");
 
-        int l = left;
-        c = formula.charAt(Math.max(l,0));//ここまで来ていたら多分次には文字が来るはず
-        if(c == 'n'){
-            l--;
-            if(formula.charAt(Math.max(l,0)) == 'i'){
-                l--;
-                if(formula.charAt(Math.max(l,0)) == 's'){
-                    n = new SinNode(formula.substring(Math.min(left+2,right-1),right));
-                    left = l-1;//ちゃんと行くか不明
-                }
-            }
-        }else n = new Node(formula.substring(Math.min(left+2,right-1),right));//カッコ閉じの次まで読んでしまうのでleft+2しないと上手く取れない
+        //ノードが関数かどうかを判定
+        String s = formula.substring(Math.max(0,left-2),left+1);
+        //三角関数類
+        if(s.equals("sin")){
+            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.SIN);
+            left -= 3;
+        }else if(s.equals("cos")){
+            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.COS);
+            left -= 3;
+        }else if(s.equals("tan")){
+            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.TAN);
+            left -= 3;
+        }else if(s.equals("csc")){
+            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.CSC);
+            left -= 3;
+        }else if(s.equals("sec")){
+            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.SEC);
+            left -= 3;
+        }else if(s.equals("cot")){
+            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.COT);
+            left -= 3;
+        }
+        else n = new Node(formula.substring(Math.min(left+2,right-1),right));//カッコ閉じの次まで読んでしまうのでleft+2しないと上手く取れない
 
         right = left;//カッコ閉じの次の文字を指す
         return n;
@@ -289,6 +302,8 @@ public class Node {
     }
     public Node(double d){
         this.value = d;
+    }
+    public Node(){//なんかこれが無いと継承時に面倒そうなのでとりあえず実装
     }
     public final double getValue() {
         return this.value;
