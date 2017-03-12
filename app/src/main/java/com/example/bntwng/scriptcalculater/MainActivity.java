@@ -86,9 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 sb.append(ln);
                 str = br.readLine();
             }
-
             memoEditor.setText(sb.toString());
-
             br.close();
         }catch (Exception e){//ファイルが無いとか読み込みミスったら何もしない
             //messageView.setText("onCreate:" + e.getMessage());//念のための出力、今はコメントアウト
