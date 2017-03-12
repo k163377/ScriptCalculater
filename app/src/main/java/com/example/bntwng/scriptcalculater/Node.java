@@ -51,7 +51,6 @@ public class Node {
             }
             left--;//数字なら続行
         }
-
         //数字の時はrightを+1してsubstringを取らないとケツが切れる
         Node n = new Node(Double.parseDouble(formula.substring(left+1, right+1)));
         right = left;//最初の数字でないものもしくは-1とかが入る
@@ -140,13 +139,6 @@ public class Node {
             if(c == '+')nodeArray.set(i, new Node(nodeArray.get(i + 1).getValue() + nodeArray.get(i).getValue()));
             else if(c == '-')nodeArray.set(i, new Node(nodeArray.get(i + 1).getValue() - nodeArray.get(i).getValue()));
         }
-
-    	/*for(Integer c:operatorArray){
-    		System.out.println((char)(int)c);
-    		if(c == '+')nodeArray.set(0, new Node(nodeArray.get(1).getValue() + nodeArray.get(0).getValue()));
-    		else if(c == '-')nodeArray.set(0, new Node(nodeArray.get(1).getValue() - nodeArray.get(0).getValue()));
-    		nodeArray.remove(1);
-    	}*/
     }
 
     protected double calculate(String formula) throws IllegalArgumentException{//valueに入れるとこまでやる
