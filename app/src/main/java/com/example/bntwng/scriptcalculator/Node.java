@@ -27,8 +27,8 @@ public class Node {
             left--;
         }
         if(depth!=0)throw new IllegalArgumentException("カッコの数が合いません");
-
-        Node n = new Node(formula.substring(left + 2,right));//カッコ閉じの次まで読んでしまうのでleft+2しないと上手く取れない
+        //ここで即Nodeを作るのではなく、その後も見た方が良い
+        Node n = new Node(formula.substring(Math.min(left+2,right-1),right));//カッコ閉じの次まで読んでしまうのでleft+2しないと上手く取れない
         right = left;//カッコ閉じの次の文字を指す
         return n;
     }
