@@ -18,9 +18,8 @@ public class Node {
         int depth = 1;
         char c;
         Node n = null;
-
         left = right-1;
-
+        //カッコの内容の切り出し
         while( (0 < depth) && (-1<left) ){
             c = formula.charAt(left);
 
@@ -30,8 +29,8 @@ public class Node {
             left--;
         }
         if(depth!=0)throw new IllegalArgumentException("カッコの数が合いません");
-
         //ノードが関数かどうかを判定
+        //3文字の場合
         String s = formula.substring(Math.max(0,left-2),left+1);
         //三角関数類
         if(s.equals("sin")){
@@ -51,6 +50,21 @@ public class Node {
             left -= 3;
         }else if(s.equals("cot")){
             n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.COT);
+            left -= 3;
+        }
+        //log
+        else if(s.equals("log")){
+            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.LOG);
+            left -= 3;
+        }
+        //asb
+        else if(s.equals("abs")){
+            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.ABS);
+            left -= 3;
+        }
+        //exp
+        else if(s.equals("exp")){
+            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.EXP);
             left -= 3;
         }
         else n = new Node(formula.substring(Math.min(left+2,right-1),right));//カッコ閉じの次まで読んでしまうのでleft+2しないと上手く取れない
@@ -176,13 +190,13 @@ public class Node {
         boolean[] needsCalculation = new boolean[5];
         for(short i = 0; i < 5; i++)needsCalculation[i]=false;
 
-        char c;
+        char c = 0;
         CharMap.nonterminalSymbol ns;
         boolean isNode = false;//ノードか演算子かの判定
 
         try{
-            while(right > -1){
-                c = formula.charAt(right);
+            while(right > -1&&(c = formula.charAt(right)) != ','){
+                //c = formula.charAt(right);
                 ns = CharMap.symbolInspection(c);
 
                 if(ns == CharMap.nonterminalSymbol.OPERATOR){
@@ -268,6 +282,7 @@ public class Node {
                 }
             }
 
+            if(c == ',')right--;
             //演算開始
             if(needsCalculation[0] == true)calculatingFactorial(nodeArray,operatorArray);
             //単項演算子が消えたので、ここで式の先頭に有る符号になっている演算子を処理する
@@ -286,8 +301,6 @@ public class Node {
             if(needsCalculation[4] == true)calculatingAddition(nodeArray,operatorArray);
 
             return nodeArray.get(0).getValue();//ここの前に確認はした方がいいかも
-
-            //値はコンストラクタで代入?
         }catch (Exception e){
             throw e;
         }
@@ -296,6 +309,7 @@ public class Node {
     public Node(String formula)throws IllegalArgumentException{
         try{
             value = calculate(formula);
+            if(right >= 0)throw new IllegalArgumentException("予期せぬエラー");
         }catch (Exception e){
             throw e;
         }
