@@ -1,8 +1,4 @@
-package com.example.bntwng.scriptcalculater;
-
-/**
- * Created by bntwng on 2017/03/12.
- */
+package com.example.bntwng.scriptcalculator;
 
 public class physicalConstants {
     public static final double c = 299792458;//光速
