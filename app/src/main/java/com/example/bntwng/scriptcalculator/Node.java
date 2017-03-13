@@ -1,12 +1,13 @@
 package com.example.bntwng.scriptcalculator;
 
-/**
- * Created by bntwng on 2017/03/12.
- */
-
 import com.example.bntwng.scriptcalculator.functions.*;
 
 import java.util.ArrayList;
+
+//関数の大雑把な解説
+//Analysis系:一つのノードを計算して返す
+//calculating系:行を入力すると演算子とノードを喰って計算していく
+//calculate:Stringを入力すると、文全て、もしくはカンマで区切られた部分までを喰ってdouble値を返す
 
 public class Node {
     protected int left,right;
@@ -30,51 +31,108 @@ public class Node {
         }
         if(depth!=0)throw new IllegalArgumentException("カッコの数が合いません");
         //ノードが関数かどうかを判定
-        //3文字の場合
-        String s = formula.substring(Math.max(0,left-2),left+1);
-        //三角関数類
-        if(s.equals("sin")){
-            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.SIN);
-            left -= 3;
-        }else if(s.equals("cos")){
-            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.COS);
-            left -= 3;
-        }else if(s.equals("tan")){
-            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.TAN);
-            left -= 3;
-        }else if(s.equals("csc")){
-            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.CSC);
-            left -= 3;
-        }else if(s.equals("sec")){
-            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.SEC);
-            left -= 3;
-        }else if(s.equals("cot")){
-            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.COT);
-            left -= 3;
+        //4文字っぽく切り出す
+        String s = formula.substring(Math.max(0,left-3),left+1);
+        if(s.length()==4){//4文字切り出せた場合
+            //逆三角関数
+            if(s.equals("asin")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.ASIN);
+                left -= 4;
+            }else if(s.equals("acos")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.ACOS);
+                left -= 4;
+            }else if(s.equals("atan")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.ATAN);
+                left -= 4;
+            }else if(s.equals("acsc")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.ACSC);
+                left -= 4;
+            }else if(s.equals("asec")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.ASEC);
+                left -= 4;
+            }else if(s.equals("acot")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.ACOT);
+                left -= 4;
+            }
+            //双曲線関数
+            else if(s.equals("sinh")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.SINH);
+                left -= 4;
+            }else if(s.equals("cosh")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.COSH);
+                left -= 4;
+            }else if(s.equals("tanh")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.TANH);
+                left -= 4;
+            }else if(s.equals("csch")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.CSCH);
+                left -= 4;
+            }else if(s.equals("sech")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.SECH);
+                left -= 4;
+            }else if(s.equals("coth")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.COTH);
+                left -= 4;
+            }
+            //ルート
+            else if(s.equals("root")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.ROOT);
+                left -= 4;
+            }
+            else s = s.substring(1,4);//4文字から該当なしなら先頭一文字を消して次へ渡す
         }
-        //log
-        else if(s.equals("log")){
-            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.LOG);
-            left -= 3;
+        if(s.length()==3) {
+            //三角関数類
+            if (s.equals("sin")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.SIN);
+                left -= 3;
+            } else if (s.equals("cos")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.COS);
+                left -= 3;
+            } else if (s.equals("tan")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.TAN);
+                left -= 3;
+            } else if (s.equals("csc")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.CSC);
+                left -= 3;
+            } else if (s.equals("sec")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.SEC);
+                left -= 3;
+            } else if (s.equals("cot")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.COT);
+                left -= 3;
+            }
+            //基礎的な算術関数
+            else if (s.equals("log")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.LOG);
+                left -= 3;
+            } else if (s.equals("pow")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.POW);
+                left -= 3;
+            }
+            //その他関数
+            else if (s.equals("abs")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.ABS);
+                left -= 3;
+            } else if (s.equals("exp")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.EXP);
+                left -= 3;
+            } else if (s.equals("max")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.MAX);
+                left -= 3;
+            } else if (s.equals("min")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions3.MIN);
+                left -= 3;
+            }
         }
-        //asb
-        else if(s.equals("abs")){
-            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.ABS);
-            left -= 3;
-        }
-        //exp
-        else if(s.equals("exp")){
-            n = new FunctionNode(formula.substring(Math.min(left+2,right-1),right), FunctionNode.functions3.EXP);
-            left -= 3;
-        }
-        else n = new Node(formula.substring(Math.min(left+2,right-1),right));//カッコ閉じの次まで読んでしまうのでleft+2しないと上手く取れない
+        //長さが4でも3でもなかった時,何も入っていないはずなのでnull検査する
+        if(n == null)n = new Node(formula.substring(Math.min(left + 2, right - 1), right));//カッコ閉じの次まで読んでしまうのでleft+2しないと上手く取れない
 
         right = left;//カッコ閉じの次の文字を指す
         return n;
     }
     protected final Node numberAnalysis(String formula) throws IllegalArgumentException{
-        //とりあえず数字のみを分析
-        //予定では数字オンリーのノードを作って返す
+        //数字オンリーのノードを作って返す
         boolean isDecimal = false;
         char c;
 
@@ -91,7 +149,7 @@ public class Node {
             }
             left--;//数字なら続行
         }
-        //数字の時はrightを+1してsubstringを取らないとケツが切れる
+        //数字の時はright, left共にを+1してsubstringを取らないとケツが切れる
         Node n = new Node(Double.parseDouble(formula.substring(left+1, right+1)));
         right = left;//最初の数字でないものもしくは-1とかが入る
         return n;
@@ -281,8 +339,6 @@ public class Node {
                     else if(nodeMaked==true)isNode = true;
                 }
             }
-
-            if(c == ',')right--;
             //演算開始
             if(needsCalculation[0] == true)calculatingFactorial(nodeArray,operatorArray);
             //単項演算子が消えたので、ここで式の先頭に有る符号になっている演算子を処理する
@@ -309,7 +365,7 @@ public class Node {
     public Node(String formula)throws IllegalArgumentException{
         try{
             value = calculate(formula);
-            if(right >= 0)throw new IllegalArgumentException("予期せぬエラー");
+            if(right >= 0)throw new IllegalArgumentException(",が先頭に有ります");
         }catch (Exception e){
             throw e;
         }
