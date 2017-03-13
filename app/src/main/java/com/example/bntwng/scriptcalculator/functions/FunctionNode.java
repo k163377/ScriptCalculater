@@ -14,7 +14,26 @@ public class FunctionNode extends Node {
         TAN,
         CSC,
         SEC,
-        COT
+        COT,
+        //log
+        LOG,
+        //abs
+        ABS,
+        //exp
+        EXP,
+    }
+    protected double logCalculate(String formula) throws IllegalArgumentException{
+        try {
+            double d1 = calculate(formula);//とりあえず消しきれなかったときはエラーを吐いておく、後で,区切りに関して実装
+            if (right >= 0) {
+                double d2 = calculate(formula.substring(0,right));//カンマ後はsubstringを取り、自動でrightが減るため、ここでrightを触る必要は無い
+                if(right>=0)throw new IllegalArgumentException("log関数内に文法エラー");
+                return Math.log10(d1) / Math.log10(d2);
+            }
+            return Math.log(d1);
+        }catch (Exception e){
+            throw e;
+        }
     }
 
     public FunctionNode(String formula,functions3 f) throws IllegalArgumentException{
@@ -39,6 +58,16 @@ public class FunctionNode extends Node {
                 case COT:
                     value = 1/Math.tan(calculate(formula));
                     break;
+                //log
+                case LOG:
+                    value = logCalculate(formula);
+                    break;
+                //abs
+                case ABS:
+                    value = Math.abs(calculate(formula));
+                    break;
+                case EXP:
+                    value = Math.exp(calculate(formula));
             }
         }catch (Exception e){
             throw e;
