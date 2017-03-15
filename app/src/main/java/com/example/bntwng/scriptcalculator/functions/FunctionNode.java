@@ -22,7 +22,7 @@ public class FunctionNode extends Node {
         MAX,
         MIN,
     }
-    public enum functions4{//まだ完全にやってない
+    public enum functions4{
         //逆三角関数
         ASIN,
         ACOS,
@@ -38,6 +38,7 @@ public class FunctionNode extends Node {
         SECH,
         COTH,
         //ルート
+        SQRT,
         ROOT,
     }
     //3文字系関数
@@ -199,7 +200,10 @@ public class FunctionNode extends Node {
                 case COTH:
                     value = 1/Math.tanh(calculate(formula));
                     break;
-                //ルート
+                //ルート、一応平方根も実装
+                case SQRT:
+                    value = Math.sqrt(calculate(formula));
+                    break;
                 case ROOT:
                     value = rootCalculate(formula);
                     break;
