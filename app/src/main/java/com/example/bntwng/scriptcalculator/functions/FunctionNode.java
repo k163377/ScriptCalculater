@@ -27,6 +27,9 @@ public class FunctionNode extends Node {
         ASIN,
         ACOS,
         ATAN,
+        ACSC,
+        ASEC,
+        ACOT,
         //双曲線関数
         SINH,
         COSH,
@@ -37,7 +40,7 @@ public class FunctionNode extends Node {
         //ルート
         ROOT,
     }
-
+    //3文字系関数
     protected double logCalculate(String formula) throws IllegalArgumentException{
         try {
             double d1 = calculate(formula);//とりあえず消しきれなかったときはエラーを吐いておく、後で,区切りに関して実装
@@ -92,28 +95,42 @@ public class FunctionNode extends Node {
             throw e;
         }
     }
+    //4文字系関数
+    protected double rootCalculate(String formula) throws IllegalArgumentException{
+        try {
+            double d1 = calculate(formula);//とりあえず消しきれなかったときはエラーを吐いておく、後で,区切りに関して実装
+            if (right >= 0) {
+                double d2 = calculate(formula.substring(0,right));//カンマ後はsubstringを取り、自動でrightが減るため、ここでrightを触る必要は無い
+                if(right>=0)throw new IllegalArgumentException("root関数内に文法エラー");
+                return Math.pow(d1,1/d2);
+            }
+            return Math.sqrt(d1);
+        }catch (Exception e){
+            throw e;
+        }
+    }
 
     public FunctionNode(String formula,functions3 f) throws IllegalArgumentException{
         try {
             switch (f) {
                 //三角関数
                 case SIN:
-                    value = Math.sin(calculate(formula));
+                    value = Math.sin(calculate(formula)%(2*Math.PI));
                     break;
                 case COS:
-                    value = Math.cos(calculate(formula));
+                    value = Math.cos(calculate(formula)%(2*Math.PI));
                     break;
                 case TAN:
-                    value = Math.tan(calculate(formula));
+                    value = Math.tan(calculate(formula)%(2*Math.PI));
                     break;
                 case CSC:
-                    value = 1/Math.sin(calculate(formula));
+                    value = 1/Math.sin(calculate(formula)%(2*Math.PI));
                     break;
                 case SEC:
-                    value = 1/Math.cos(calculate(formula));
+                    value = 1/Math.cos(calculate(formula)%(2*Math.PI));
                     break;
                 case COT:
-                    value = 1/Math.tan(calculate(formula));
+                    value = 1/Math.tan(calculate(formula)%(2*Math.PI));
                     break;
                 //log
                 case LOG:
@@ -143,7 +160,50 @@ public class FunctionNode extends Node {
     }
     public FunctionNode(String formula,functions4 f) throws IllegalArgumentException {
         try {
-
+            switch (f){
+                //逆三角関数
+                case ASIN:
+                    value = Math.asin(calculate(formula));
+                    break;
+                case ACOS:
+                    value = Math.acos(calculate(formula));
+                    break;
+                case ATAN:
+                    value = Math.atan(calculate(formula));
+                    break;
+                case ACSC:
+                    value = 1/Math.asin(calculate(formula));
+                    break;
+                case ASEC:
+                    value = 1/Math.acos(calculate(formula));
+                    break;
+                case ACOT:
+                    value = 1/Math.atan(calculate(formula));
+                    break;
+                //双曲線関数
+                case SINH:
+                    value = Math.sinh(calculate(formula));
+                    break;
+                case COSH:
+                    value = Math.cosh(calculate(formula));
+                    break;
+                case TANH:
+                    value = Math.tanh(calculate(formula));
+                    break;
+                case CSCH:
+                    value = 1/Math.sinh(calculate(formula));
+                    break;
+                case SECH:
+                    value = 1/Math.cosh(calculate(formula));
+                    break;
+                case COTH:
+                    value = 1/Math.tanh(calculate(formula));
+                    break;
+                //ルート
+                case ROOT:
+                    value = rootCalculate(formula);
+                    break;
+            }
         } catch (Exception e) {
             throw e;
         }
