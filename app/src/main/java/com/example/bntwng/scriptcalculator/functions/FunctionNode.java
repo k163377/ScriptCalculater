@@ -76,7 +76,7 @@ public class FunctionNode extends Node {
             double d1 = calculate(formula);
             double d2;
             while (right>=0){
-                if(d1 < (d2 = calculate(formula)))d1 = d2;
+                if(d1 < (d2 = calculate(formula.substring(0,right))))d1 = d2;
             }
             return d1;
         }catch (Exception e){
@@ -89,7 +89,7 @@ public class FunctionNode extends Node {
             double d1 = calculate(formula);
             double d2;
             while (right>=0){
-                if(d1 > (d2 = calculate(formula)))d1 = d2;
+                if(d1 > (d2 = calculate(formula.substring(0,right))))d1 = d2;
             }
             return d1;
         }catch (Exception e){
@@ -152,7 +152,7 @@ public class FunctionNode extends Node {
                     value = maxCalculate(formula);
                     break;
                 case MIN:
-                    value = maxCalculate(formula);
+                    value = minCalculate(formula);
                     break;
             }
         }catch (Exception e){
