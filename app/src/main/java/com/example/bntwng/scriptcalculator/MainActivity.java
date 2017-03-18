@@ -233,24 +233,30 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){//メニューが選ばれた時の対応
         switch(item.getItemId()){
             case R.id.option_menu_item0://定数
-                setContentView(R.layout.web_view);
-                initAdView();
-                webViewIsEnable = true;
-                wv = (WebView)findViewById(R.id.webView);//webView初期化
+                if(!webViewIsEnable) {//webViewじゃなかったら初期化
+                    setContentView(R.layout.web_view);
+                    wv = (WebView)findViewById(R.id.webView);//webView初期化
+                    webViewIsEnable = true;
+                    initAdView();
+                }
                 wv.loadUrl("file://" + getFilesDir().toString()+"/0.html");
                 break;
             case R.id.option_menu_item1://演算子
-                setContentView(R.layout.web_view);
-                initAdView();
-                webViewIsEnable = true;
-                wv = (WebView)findViewById(R.id.webView);//webView初期化
+                if(!webViewIsEnable) {//webViewじゃなかったら初期化
+                    setContentView(R.layout.web_view);
+                    wv = (WebView)findViewById(R.id.webView);//webView初期化
+                    webViewIsEnable = true;
+                    initAdView();
+                }
                 wv.loadUrl("file://" + getFilesDir().toString()+"/1.html");
                 break;
             case R.id.option_menu_item2://関数
-                setContentView(R.layout.web_view);
-                initAdView();
-                webViewIsEnable = true;
-                wv = (WebView)findViewById(R.id.webView);//webView初期化
+                if(!webViewIsEnable) {//webViewじゃなかったら初期化
+                    setContentView(R.layout.web_view);
+                    wv = (WebView)findViewById(R.id.webView);//webView初期化
+                    webViewIsEnable = true;
+                    initAdView();
+                }
                 wv.loadUrl("file://" + getFilesDir().toString()+"/2.html");
                 break;
         }
@@ -260,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode,KeyEvent event){//webViewを起動したときの戻るキーの挙動制御
         if(keyCode==KeyEvent.KEYCODE_BACK && webViewIsEnable){
             setContentView(R.layout.activity_main);
-            //ここでAdViewを読み直さないと消えたままになる
+            //ここでAdViewを読み直さないとadViewが消えたままになる
             initAdView();
             webViewIsEnable = false;
 
