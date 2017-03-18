@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     EditText memoEditor;
 
     InputMethodManager inputMethodManager;
-    //webview関連
+    //webiew関連
     WebView wv;
     boolean webViewIsEnable = false;//ウェブビューかどうかの判定
     //バックアップと復元関連
@@ -54,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
             messageView.setText("バックアップに失敗しました、念のためデータの外部への保存を推奨します");
         }
     }
-    protected void initMemoEditor(){
+    protected void initMemoEditor(){//メモエディタの初期化と以前の内容からの復元
+        memoEditor = (EditText) findViewById(R.id.memoEditor);
+
         try{//バックアップからの復元
             File file = new File(getFilesDir().getPath() + "/temp");
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -70,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             memoEditor.setText(sb.toString());
             br.close();
         }catch (Exception e){//ファイルが無いとか読み込みミスったら何もしない
-            //messageView.setText("onCreate:" + e.getMessage());//念のための出力、今はコメントアウト
         }
     }
     //AdViewの初期化
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         public loadDescription(int i){
             index = i;
-            switch (i){
+            switch (i){//どのURLを読むかを参照
                 case 0:
                     url = (String)getResources().getText(R.string.constants_url);
                     break;
@@ -124,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                 pw.print(sb.toString());
                 pw.close();
             }catch (Exception e){
-                //一旦無視して作成
             }
         }
     }
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {//アプリ開始時に呼ばれる
-        //解説のファイルを読み込み、多分初期化で一番時間喰うので一番上で宣言
+        //解説のファイルを読み込み、多分ネット接続とストレージアクセスする都合で初期化中一番時間喰うので一番上で宣言
         File f = new File(getFilesDir(),"0.html");
         loadDescription ld = new loadDescription(0);
         ld.start();
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         ld3.start();
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);//レイアウト読み込み
         //広告
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-8906600258681229~8490126796");
         initAdView();
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         inputMethodManager =  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         //メッセージ表示部
         messageView = (TextView)findViewById(R.id.messageView);
-        //公式入力部
+        //計算入力部
         inputFormula = (EditText)findViewById(R.id.inputFormula);
         inputFormula.setOnKeyListener(new View.OnKeyListener() {
             //コールバックとしてonKey()メソッドを定義
@@ -201,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //メモ帳部
-        memoEditor = (EditText) findViewById(R.id.memoEditor);
         initMemoEditor();//バックアップからの復元
     }
 
