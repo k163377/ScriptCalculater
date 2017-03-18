@@ -1,6 +1,7 @@
 package com.example.bntwng.scriptcalculator;
 
 public class physicalConstants {
+    //public static finalなので計算していてもコンパイル時にインライン展開される
     public static final double c = 299792458;//光速
     public static final double el = 1.6021766208*Math.pow(10,-19);//電気素量
     public static final double f = 96485.33289;//ファラデー定数
