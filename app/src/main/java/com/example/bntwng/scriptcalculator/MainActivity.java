@@ -33,7 +33,7 @@ import java.net.URLDecoder;
 public class MainActivity extends AppCompatActivity {
     static String ln = System.getProperty("line.separator");
 
-    boolean webViewIsEnable = false;
+    boolean webViewIsEnable = false;//ウェブビューかどうかの判定
 
     Button doButton;
     EditText inputFormula;
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected void backUp(){//メモを保存
         try {
-            //File file = new File(getFilesDir().getPath() + "/temp");
             File file = new File(getFilesDir(),"temp");
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
@@ -105,14 +104,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {//アプリ開始時に呼ばれる
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //広告
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-8906600258681229~8490126796");
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        //入力の監視
         inputMethodManager =  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        messageView = (TextView)  findViewById(R.id.messageView);
-
-        memoEditor = (EditText) findViewById(R.id.memoEditor);
-        initMemoEditor();//バックアップからの復元
-
-        inputFormula = (EditText) findViewById(R.id.inputFormula);
+        //メッセージ表示部
+        messageView = (TextView)findViewById(R.id.messageView);
+        //公式入力部
+        inputFormula = (EditText)findViewById(R.id.inputFormula);
         inputFormula.setOnKeyListener(new View.OnKeyListener() {
             //コールバックとしてonKey()メソッドを定義
             @Override
@@ -129,27 +131,17 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        doButton =  (Button) findViewById(R.id.doButton);
+        //計算開始ボタン
+        doButton = (Button) findViewById(R.id.doButton);
         doButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 calculate();
             }
         });
-
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-8906600258681229~8490126796");
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-        //wv = (WebView)findViewById(R.id.webView);//webView初期化
-        /*wv.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url){
-                return false;
-            }
-        });*/
+        //メモ帳部
+        memoEditor = (EditText) findViewById(R.id.memoEditor);
+        initMemoEditor();//バックアップからの復元
     }
 
     @Override
@@ -191,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
     @Override
     public boolean onKeyDown(int keyCode,KeyEvent event){//webViewを起動したときの戻るキーの挙動制御
         if(keyCode==KeyEvent.KEYCODE_BACK && webViewIsEnable){
@@ -199,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
             webViewIsEnable = false;
             return true;
         }
-        return false;
+        return super.onKeyDown(keyCode,event);
     }
 }
-
