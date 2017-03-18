@@ -32,19 +32,17 @@ import java.net.URLDecoder;
 
 public class MainActivity extends AppCompatActivity {
     static String ln = System.getProperty("line.separator");
-
-    boolean webViewIsEnable = false;//ウェブビューかどうかの判定
-
-    Button doButton;
-    EditText inputFormula;
-    EditText memoEditor;
+    //画面のパーツ
+    AdView mAdView;
     TextView messageView;
+    EditText inputFormula;
+    Button doButton;
+    EditText memoEditor;
 
     InputMethodManager inputMethodManager;
-
-    AdView mAdView;
-
+    //webview関連
     WebView wv;
+    boolean webViewIsEnable = false;//ウェブビューかどうかの判定
 
     protected void backUp(){//メモを保存
         try {
