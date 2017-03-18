@@ -73,28 +73,11 @@ public class MainActivity extends AppCompatActivity {
             //messageView.setText("onCreate:" + e.getMessage());//念のための出力、今はコメントアウト
         }
     }
-    //計算
-    protected void calculate(){
-        try{
-            String s = inputFormula.getText().toString();
-            if(s.equals(""))return;//何も入っていなければ何もせずリターン
-
-            Node n = new Node(s);
-
-            StringBuilder sb = new StringBuilder(ln);
-            sb.append(s);
-            sb.append(" =");
-            sb.append(ln);
-            sb.append(BigDecimal.valueOf(n.getValue()).toPlainString());
-            sb.append(ln);
-
-            memoEditor.append(sb.toString());
-            messageView.setText("calculated");
-
-            backUp();
-        }catch(Exception e){
-            messageView.setText(e.getMessage());
-        }
+    //AdViewの初期化
+    protected void initAdView(){
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
     //説明用htmlを作成するためのスレッド
     public class loadDescription extends Thread{
@@ -145,6 +128,29 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    //計算
+    protected void calculate(){
+        try{
+            String s = inputFormula.getText().toString();
+            if(s.equals(""))return;//何も入っていなければ何もせずリターン
+
+            Node n = new Node(s);
+
+            StringBuilder sb = new StringBuilder(ln);
+            sb.append(s);
+            sb.append(" =");
+            sb.append(ln);
+            sb.append(BigDecimal.valueOf(n.getValue()).toPlainString());
+            sb.append(ln);
+
+            memoEditor.append(sb.toString());
+            messageView.setText("calculated");
+
+            backUp();
+        }catch(Exception e){
+            messageView.setText(e.getMessage());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {//アプリ開始時に呼ばれる
@@ -163,9 +169,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //広告
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-8906600258681229~8490126796");
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        initAdView();
         //入力の監視
         inputMethodManager =  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         //メッセージ表示部
@@ -205,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy(){
         backUp();
         if(mAdView != null) mAdView.destroy();
-
         super.onDestroy();
     }
 
@@ -231,18 +234,21 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.option_menu_item0://定数
                 setContentView(R.layout.web_view);
+                initAdView();
                 webViewIsEnable = true;
                 wv = (WebView)findViewById(R.id.webView);//webView初期化
                 wv.loadUrl("file://" + getFilesDir().toString()+"/0.html");
                 break;
             case R.id.option_menu_item1://演算子
                 setContentView(R.layout.web_view);
+                initAdView();
                 webViewIsEnable = true;
                 wv = (WebView)findViewById(R.id.webView);//webView初期化
                 wv.loadUrl("file://" + getFilesDir().toString()+"/1.html");
                 break;
             case R.id.option_menu_item2://関数
                 setContentView(R.layout.web_view);
+                initAdView();
                 webViewIsEnable = true;
                 wv = (WebView)findViewById(R.id.webView);//webView初期化
                 wv.loadUrl("file://" + getFilesDir().toString()+"/2.html");
@@ -255,9 +261,7 @@ public class MainActivity extends AppCompatActivity {
         if(keyCode==KeyEvent.KEYCODE_BACK && webViewIsEnable){
             setContentView(R.layout.activity_main);
             //ここでAdViewを読み直さないと消えたままになる
-            mAdView = (AdView) findViewById(R.id.adView);
-            AdRequest adRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(adRequest);
+            initAdView();
             webViewIsEnable = false;
 
             return true;
