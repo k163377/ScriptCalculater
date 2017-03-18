@@ -25,9 +25,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.net.URLDecoder;
 
 public class MainActivity extends AppCompatActivity {
@@ -98,6 +100,55 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public class loadDescription extends Thread{
+        public String url = "";//暫定でpublicに
+        int index;
+
+        public loadDescription(int i){
+            index = i;
+            switch (i){
+                case 0:
+                    url = (String)getResources().getText(R.string.constants_url);
+                    break;
+                case 1:
+                    url = (String)getResources().getText(R.string.operators_url);
+                    break;
+                case 2:
+                    url = (String)getResources().getText(R.string.functions_url);
+                    break;
+            }
+        }
+        public void run(){
+            if(url.equals(""))return;
+            try {
+                URL u = new URL(url);
+                BufferedReader in = new BufferedReader(new InputStreamReader(u.openConnection().getInputStream(), "utf-8"));
+                StringBuilder sb = new StringBuilder("<html><body><meta http-equiv=\"Content-Type\" content=\"text/html\"; charset=\"UTF-8\";><div style=\"border: 1px solid rgb(0, 0, 0);rules: 1px solid rgb(0, 0, 0;)\"><table frame=\"border\">");
+                String s;
+
+                s = in.readLine();
+                while(s.indexOf("markdown-body") == -1)s = in.readLine();
+                //while(!s.equals("<table>"))s = in.readLine();
+                while(s.indexOf("</div>") == -1){
+                    if(s.indexOf("<table>")!=-1){
+                        sb.append("<table frame=\"border\" rules=\"all\" >");
+                    }else sb.append(s);
+                    sb.append(System.getProperty("line.separator"));
+                    s = in.readLine();
+                }
+                in.close();
+                sb.append("</div></body></html>");
+
+                File file = new File(getFilesDir(),String.valueOf(index)+".html");
+                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+                pw.print(sb.toString());
+                pw.close();
+            }catch (Exception e){
+                //一旦無視して作成
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {//アプリ開始時に呼ばれる
         super.onCreate(savedInstanceState);
@@ -140,6 +191,16 @@ public class MainActivity extends AppCompatActivity {
         //メモ帳部
         memoEditor = (EditText) findViewById(R.id.memoEditor);
         initMemoEditor();//バックアップからの復元
+        //解説のファイルを読み込み
+        File f = new File(getFilesDir(),"0.html");
+        loadDescription ld = new loadDescription(0);
+        ld.start();
+        f = new File(getFilesDir(),"1.html");
+        loadDescription ld2 = new loadDescription(1);
+        ld2.start();
+        f = new File(getFilesDir(),"2.html");
+        loadDescription ld3 = new loadDescription(2);
+        ld3.start();
     }
 
     @Override
@@ -161,22 +222,33 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){//メニューが選ばれた時の対応
         switch(item.getItemId()){
             case R.id.option_menu_item0://定数
+                //loadDescription ld = new loadDescription(0);
+                //ld.start();
                 setContentView(R.layout.web_view);
                 webViewIsEnable = true;
                 wv = (WebView)findViewById(R.id.webView);//webView初期化
-                wv.loadUrl("https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E5%AE%9A%E6%95%B0");
+                /*try{
+                    ld.join();
+                }catch (Exception e){
+                    messageView.setText("aaa");
+                }*/
+                wv.loadUrl("file://" + getFilesDir().toString()+"/0.html");
+                //wv.loadUrl(ld.url);
+                //wv.loadUrl("https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E5%AE%9A%E6%95%B0");
                 break;
             case R.id.option_menu_item1://演算子
                 setContentView(R.layout.web_view);
                 webViewIsEnable = true;
                 wv = (WebView)findViewById(R.id.webView);//webView初期化
-                wv.loadUrl("https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E6%BC%94%E7%AE%97%E5%AD%90");
+                wv.loadUrl("file://" + getFilesDir().toString()+"/1.html");
+                //wv.loadUrl("https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E6%BC%94%E7%AE%97%E5%AD%90");
                 break;
             case R.id.option_menu_item2://関数
                 setContentView(R.layout.web_view);
                 webViewIsEnable = true;
                 wv = (WebView)findViewById(R.id.webView);//webView初期化
-                wv.loadUrl("https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E9%96%A2%E6%95%B0");
+                wv.loadUrl("file://" + getFilesDir().toString()+"/2.html");
+                //wv.loadUrl("https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E9%96%A2%E6%95%B0");
                 break;
         }
         return true;
