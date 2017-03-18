@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,10 +26,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.net.URLDecoder;
 
 public class MainActivity extends AppCompatActivity {
     static String ln = System.getProperty("line.separator");
@@ -45,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     //webview関連
     WebView wv;
     boolean webViewIsEnable = false;//ウェブビューかどうかの判定
-
+    //バックアップと復元関連
     protected void backUp(){//メモを保存
         try {
             File file = new File(getFilesDir(),"temp");
@@ -76,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             //messageView.setText("onCreate:" + e.getMessage());//念のための出力、今はコメントアウト
         }
     }
-
+    //計算
     protected void calculate(){
         try{
             String s = inputFormula.getText().toString();
@@ -99,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             messageView.setText(e.getMessage());
         }
     }
-
+    //説明用htmlを作成するためのスレッド
     public class loadDescription extends Thread{
         public String url = "";//暫定でpublicに
         int index;
@@ -151,6 +148,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {//アプリ開始時に呼ばれる
+        //解説のファイルを読み込み、多分初期化で一番時間喰うので一番上で宣言
+        File f = new File(getFilesDir(),"0.html");
+        loadDescription ld = new loadDescription(0);
+        ld.start();
+        f = new File(getFilesDir(),"1.html");
+        loadDescription ld2 = new loadDescription(1);
+        ld2.start();
+        f = new File(getFilesDir(),"2.html");
+        loadDescription ld3 = new loadDescription(2);
+        ld3.start();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //広告
@@ -191,25 +199,25 @@ public class MainActivity extends AppCompatActivity {
         //メモ帳部
         memoEditor = (EditText) findViewById(R.id.memoEditor);
         initMemoEditor();//バックアップからの復元
-        //解説のファイルを読み込み
-        File f = new File(getFilesDir(),"0.html");
-        loadDescription ld = new loadDescription(0);
-        ld.start();
-        f = new File(getFilesDir(),"1.html");
-        loadDescription ld2 = new loadDescription(1);
-        ld2.start();
-        f = new File(getFilesDir(),"2.html");
-        loadDescription ld3 = new loadDescription(2);
-        ld3.start();
     }
 
     @Override
     protected void onDestroy(){
         backUp();
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
+        if(mAdView != null) mAdView.destroy();
+
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        if(mAdView != null) mAdView.pause();
+        super.onPause();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdView != null) mAdView.resume();
     }
 
     @Override//メニュー関連
@@ -222,33 +230,22 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){//メニューが選ばれた時の対応
         switch(item.getItemId()){
             case R.id.option_menu_item0://定数
-                //loadDescription ld = new loadDescription(0);
-                //ld.start();
                 setContentView(R.layout.web_view);
                 webViewIsEnable = true;
                 wv = (WebView)findViewById(R.id.webView);//webView初期化
-                /*try{
-                    ld.join();
-                }catch (Exception e){
-                    messageView.setText("aaa");
-                }*/
                 wv.loadUrl("file://" + getFilesDir().toString()+"/0.html");
-                //wv.loadUrl(ld.url);
-                //wv.loadUrl("https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E5%AE%9A%E6%95%B0");
                 break;
             case R.id.option_menu_item1://演算子
                 setContentView(R.layout.web_view);
                 webViewIsEnable = true;
                 wv = (WebView)findViewById(R.id.webView);//webView初期化
                 wv.loadUrl("file://" + getFilesDir().toString()+"/1.html");
-                //wv.loadUrl("https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E6%BC%94%E7%AE%97%E5%AD%90");
                 break;
             case R.id.option_menu_item2://関数
                 setContentView(R.layout.web_view);
                 webViewIsEnable = true;
                 wv = (WebView)findViewById(R.id.webView);//webView初期化
                 wv.loadUrl("file://" + getFilesDir().toString()+"/2.html");
-                //wv.loadUrl("https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E9%96%A2%E6%95%B0");
                 break;
         }
         return true;
@@ -257,7 +254,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode,KeyEvent event){//webViewを起動したときの戻るキーの挙動制御
         if(keyCode==KeyEvent.KEYCODE_BACK && webViewIsEnable){
             setContentView(R.layout.activity_main);
+            //ここでAdViewを読み直さないと消えたままになる
+            mAdView = (AdView) findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
             webViewIsEnable = false;
+
             return true;
         }
         return super.onKeyDown(keyCode,event);
