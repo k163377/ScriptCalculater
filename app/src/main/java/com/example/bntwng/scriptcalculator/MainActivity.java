@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     WebView wv;
     boolean webViewIsEnable = false;//ウェブビューかどうかの判定
     //バックアップと復元関連
-    protected void backUp(){//メモを保存
+    private void backUp(){//メモを保存
         try {
             File file = new File(getFilesDir(),"temp");
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             messageView.setText("バックアップに失敗しました、念のためデータの外部への保存を推奨します");
         }
     }
-    protected void initMemoEditor(){//メモエディタの初期化と以前の内容からの復元
+    private void initMemoEditor(){//メモエディタの初期化と以前の内容からの復元
         memoEditor = (EditText) findViewById(R.id.memoEditor);
 
         try{//バックアップからの復元
@@ -75,13 +75,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     //AdViewの初期化
-    protected void initAdView(){
+    private void initAdView(){
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }
     //説明用htmlを作成するためのスレッド
-    public class loadDescription extends Thread{
+    private class loadDescription extends Thread{
         public String url = "";//暫定でpublicに
         int index;
 
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     //計算
-    protected void calculate(){
+    private void calculate(){
         try{
             String s = inputFormula.getText().toString();
             if(s.equals(""))return;//何も入っていなければ何もせずリターン
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy(){
+    public void onDestroy(){
         backUp();
         if(mAdView != null) mAdView.destroy();
         super.onDestroy();
