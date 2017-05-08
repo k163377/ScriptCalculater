@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             File file = new File(getFilesDir(),"temp");
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            pw.println(memoEditor.getText());
+            pw.print(memoEditor.getText());
             pw.close();
         }catch (IOException e){
             messageView.setText("バックアップに失敗しました、念のためデータの外部への保存を推奨します");
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             StringBuilder sb = new StringBuilder(br.readLine());//null突っ込んでもsbがExceotion吐くのでちゃんと終わる
+            sb.append(ln);
             String str = br.readLine();
 
             while(str!=null){
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 sb.append(ln);
                 str = br.readLine();
             }
-            memoEditor.setText(sb.toString());
+            memoEditor.setText(sb);
             br.close();
         }catch (Exception e){//ファイルが無いとか読み込みミスったら何もしない
         }
@@ -167,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);//レイアウト読み込み
+
         //広告
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-8906600258681229~8490126796");
         initAdView();
@@ -213,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
+        backUp();
         if(mAdView != null) mAdView.pause();
         super.onPause();
     }
@@ -229,7 +232,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){//メニューが選ばれた時の対応
+    public boolean onOptionsItemSelected(MenuItem item){//何らかのメニューが選ばれた時の対応
+        backUp();
         switch(item.getItemId()){
             case R.id.option_menu_item0://定数
                 if(!webViewIsEnable) {//webViewじゃなかったら初期化
@@ -268,6 +272,39 @@ public class MainActivity extends AppCompatActivity {
             //ここでAdViewを読み直さないとadViewが消えたままになる
             initAdView();
             webViewIsEnable = false;
+
+           //入力の監視
+            inputMethodManager =  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            //メッセージ表示部
+            messageView = (TextView)findViewById(R.id.messageView);
+            //計算入力部
+            inputFormula = (EditText)findViewById(R.id.inputFormula);
+            inputFormula.setOnKeyListener(new View.OnKeyListener() {
+                //コールバックとしてonKey()メソッドを定義
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    //イベントを取得するタイミングには、ボタンが押されてなおかつエンターキーだったときを指定
+                    if((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
+                        //キーボードを閉じる
+                        inputMethodManager.hideSoftInputFromWindow(inputFormula.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                        //計算
+                        calculate();
+
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            //計算開始ボタン
+            doButton = (Button) findViewById(R.id.doButton);
+            doButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    calculate();
+                }
+            });
+            //メモ帳部
+            initMemoEditor();//バックアップからの復元
 
             return true;
         }

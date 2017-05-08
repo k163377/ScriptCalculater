@@ -1,3 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
-    <string name="app_name">ScriptCalculater</string>
+<string name="app_name">ScriptCalculator</string>
+
+<string name="banner_ad_unit_id">ca-app-pub-8906600258681229/6976367599</string>
+
+<string name="constants_url">https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E5%AE%9A%E6%95%B0</string>
+<string name="operators_url">https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E6%BC%94%E7%AE%97%E5%AD%90</string>
+<string name="functions_url">https://github.com/k163377/ScriptCalculater/wiki/%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E3%81%AA%E9%96%A2%E6%95%B0</string>
+
+<string name="m0">定数について</string>
+<string name="m1">演算子について</string>
+<string name="m2">関数について</string>
 </resources>

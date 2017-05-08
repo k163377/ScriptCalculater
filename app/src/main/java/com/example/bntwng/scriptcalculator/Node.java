@@ -75,7 +75,10 @@ public class Node {
                 left -= 4;
             }
             //ルート
-            else if(s.equals("root")) {
+            else if(s.equals("sqrt")) {
+                n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.SQRT);
+                left -= 4;
+            }else if(s.equals("root")) {
                 n = new FunctionNode(formula.substring(Math.min(left + 2, right - 1), right), FunctionNode.functions4.ROOT);
                 left -= 4;
             }
@@ -144,7 +147,7 @@ public class Node {
 
             if(ns != CharMap.nonterminalSymbol.NUMBER)break;//別のものが入ったので終了、ホントはノード作成に移る
             else if(c == '.'){
-                if(isDecimal == true)throw new IllegalArgumentException("1つの数に小数点が複数含まれています");
+                if(isDecimal)throw new IllegalArgumentException("1つの数に小数点が複数含まれています");
                 isDecimal = true;
             }
             left--;//数字なら続行
@@ -215,13 +218,14 @@ public class Node {
                 if(n < r)throw new IllegalArgumentException((char)c + "演算子について、nがrより小さいです");
 
                 long ans = 1;
-                while(n > r+1){
-                    ans*=n;
+                int n_r = n-r;
+                while(n > n_r){
+                    ans *= n;
                     n--;
                 }
                 if(c == 'C'){
                     while(r > 1){
-                        ans /= r;
+                        ans = ans/r;
                         r--;
                     }
                 }
@@ -262,11 +266,11 @@ public class Node {
                     //ケツから計算かまして!を消していくしかないか
                     //オペレータの有無の判定はHashMapとか使うといいかもね
                     if(c == '!'){
-                        if(isNode == true)throw new IllegalArgumentException("演算子の整合性が取れていません");
+                        if(isNode)throw new IllegalArgumentException("演算子の整合性が取れていません");
                         operatorArray.add((int)c);
                         needsCalculation[0] = true;
                         right--;
-                    }else if(isNode == false)throw new IllegalArgumentException("演算子の整合性が取れていません");
+                    }else if(!isNode)throw new IllegalArgumentException("演算子の整合性が取れていません");
                     else{
                         operatorArray.add((int)c);
                         isNode = false;
@@ -279,7 +283,7 @@ public class Node {
                     }
                 }else if(ns == CharMap.nonterminalSymbol.NUMBER){
                     //数字
-                    if(isNode == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
+                    if(isNode)throw new IllegalArgumentException("演算子無しで値が連続しています");
                     nodeArray.add(numberAnalysis(formula));
                     isNode = true;
                 }else {//数字でも演算子でもない時、ノード系、定数系、ゴミがここに来る
@@ -335,12 +339,13 @@ public class Node {
                     else right--;//今はチェック無しでごみを読み飛ばす
 
                     //ノードが連続していないかチェック
-                    if(isNode == true && nodeMaked == true)throw new IllegalArgumentException("演算子無しで値が連続しています");
-                    else if(nodeMaked==true)isNode = true;
+                    if(isNode && nodeMaked)throw new IllegalArgumentException("演算子無しで値が連続しています");
+                    else if(nodeMaked)isNode = true;
                 }
             }
+
             //演算開始
-            if(needsCalculation[0] == true)calculatingFactorial(nodeArray,operatorArray);
+            if(needsCalculation[0])calculatingFactorial(nodeArray,operatorArray);
             //単項演算子が消えたので、ここで式の先頭に有る符号になっている演算子を処理する
             if(nodeArray.size() == operatorArray.size()){
                 int o = operatorArray.get(operatorArray.size()-1);
@@ -351,10 +356,10 @@ public class Node {
                 }else throw new IllegalArgumentException("不正な演算子が先頭にあります");
             }
 
-            if(needsCalculation[1] == true)calculatingPower(nodeArray,operatorArray);
-            if(needsCalculation[2] == true)calculatingMultiplication(nodeArray,operatorArray);
-            if(needsCalculation[3] == true)calculatingPermutationAndCombination(nodeArray,operatorArray);
-            if(needsCalculation[4] == true)calculatingAddition(nodeArray,operatorArray);
+            if(needsCalculation[1])calculatingPower(nodeArray,operatorArray);
+            if(needsCalculation[2])calculatingMultiplication(nodeArray,operatorArray);
+            if(needsCalculation[3])calculatingPermutationAndCombination(nodeArray,operatorArray);
+            if(needsCalculation[4])calculatingAddition(nodeArray,operatorArray);
 
             return nodeArray.get(0).getValue();//ここの前に確認はした方がいいかも
         }catch (Exception e){

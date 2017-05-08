@@ -1,4 +1,4 @@
-package com.example.bntwng.scriptcalculater;
+package com.example.bntwng.scriptcalculator;
 
 /**
  * Created by bntwng on 2017/03/07.
@@ -15,18 +15,22 @@ public class CharMap {
 
     static{
         charMap = new HashMap<Integer,nonterminalSymbol>();
-
+        //演算子
+        //単項演算子
+        charMap.put((int)'!', nonterminalSymbol.OPERATOR);
+        //二項演算子
         charMap.put((int)'+', nonterminalSymbol.OPERATOR);
         charMap.put((int)'-', nonterminalSymbol.OPERATOR);
         charMap.put((int)'*', nonterminalSymbol.OPERATOR);
         charMap.put((int)'/', nonterminalSymbol.OPERATOR);
         charMap.put((int)'%', nonterminalSymbol.OPERATOR);
-        charMap.put((int)'^', nonterminalSymbol.OPERATOR);//これは乗算で用いる
+        charMap.put((int)'^', nonterminalSymbol.OPERATOR);//累乗
         charMap.put((int)'P', nonterminalSymbol.OPERATOR);
         //charMap.put((int)'p', nonterminalSymbol.OPERATOR);piの処理がめんどくさいのでこれは削除
         charMap.put((int)'C', nonterminalSymbol.OPERATOR);
         //charMap.put((int)'c', nonterminalSymbol.OPERATOR);
 
+        //数字
         charMap.put((int)'0', nonterminalSymbol.NUMBER);
         charMap.put((int)'1', nonterminalSymbol.NUMBER);
         charMap.put((int)'2', nonterminalSymbol.NUMBER);
@@ -38,9 +42,7 @@ public class CharMap {
         charMap.put((int)'8', nonterminalSymbol.NUMBER);
         charMap.put((int)'9', nonterminalSymbol.NUMBER);
         charMap.put((int)'0', nonterminalSymbol.NUMBER);
-        charMap.put((int)'.', nonterminalSymbol.NUMBER);//一応'.'も数字として扱う
-
-
+        charMap.put((int)'.', nonterminalSymbol.NUMBER);//一応小数点も数字として扱う
     }
 
     private CharMap(){}//中身は作らない
@@ -49,6 +51,5 @@ public class CharMap {
         nonterminalSymbol t = charMap.get((int)c);
 
         return t;
-
     }
 }

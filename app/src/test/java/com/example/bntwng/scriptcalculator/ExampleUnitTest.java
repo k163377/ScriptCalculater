@@ -1,4 +1,4 @@
-package com.example.bntwng.scriptcalculater;
+package com.example.bntwng.scriptcalculator;
 
 import org.junit.Test;
 
