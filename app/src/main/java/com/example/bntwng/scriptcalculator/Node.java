@@ -218,7 +218,7 @@ public class Node {
                 if(n < r)throw new IllegalArgumentException((char)c + "演算子について、nがrより小さいです");
 
                 long ans = 1;
-                int n_r = n-r;
+                int n_r = n - r;
                 while(n > n_r){
                     ans *= n;
                     n--;
