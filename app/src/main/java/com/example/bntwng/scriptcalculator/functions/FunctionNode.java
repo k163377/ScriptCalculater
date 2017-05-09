@@ -2,8 +2,6 @@ package com.example.bntwng.scriptcalculator.functions;
 
 import com.example.bntwng.scriptcalculator.Node;
 
-//log, max, min, powは使えるようにしたことをwikiに書いていない
-
 public class FunctionNode extends Node {
     public enum functions3{
         //三角関数
